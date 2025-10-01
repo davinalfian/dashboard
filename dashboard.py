@@ -1,9 +1,8 @@
 # streamlit_dashboard.py
 
-import os, random
+import os, random, re
 import streamlit as st
 import pandas as pd
-import joblib
 import altair as alt
 
 # -----------------------------------------------------
@@ -26,16 +25,6 @@ year_data = trials_data.groupby("Year").agg({
     'grain_size': 'mean',
     'grain_no': 'mean',
 })
-
-# Trained models
-# model_rf_yield = joblib.load("./Simulation/RF_model_yield.joblib")
-# model_rf_gsize = joblib.load("./Simulation/RF_model_gsize.joblib")
-
-# model_gb_yield = joblib.load("./Simulation/GB_model_yield.joblib")
-# model_gb_gsize = joblib.load("./Simulation/GB_model_gsize.joblib")
-
-# model_rf_multi = joblib.load("./Simulation/RF_model_multivariate.joblib")
-# model_rf_stand = joblib.load("./Simulation/RF_model_multistandardize.joblib")
 
 
 # -----------------------------------------------------
@@ -291,8 +280,8 @@ with inf_col1:
         st.session_state["last_model"] = model_target
 
     if st.session_state["last_model"] != model_target:
-        files = os.listdir(images_dir)
-        st.session_state["random_image"] = os.path.join(images_dir, random.choice(files))
+        img_idx = re.split(r'[_]', st.session_state["random_image"])[-1]
+        st.session_state["random_image"] = os.path.join(images_dir, model_target.lower() + "_inf_" + img_idx)
         st.session_state["last_model"] = model_target
 
 with inf_col2:
@@ -303,7 +292,7 @@ with inf_col2:
     st.markdown("</div>", unsafe_allow_html=True)
 
 
-    
+
 st.image(st.session_state['random_image'], caption=f"Inference result ({model_target})")
 
 
