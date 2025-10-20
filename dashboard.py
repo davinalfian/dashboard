@@ -42,7 +42,7 @@ st.sidebar.markdown("[Feature Importance & SHAP](#feature-importance-and-feature
 st.sidebar.header("Computer Vision")
 st.sidebar.markdown("[Model Comparison](#table-of-model-comparison)")
 st.sidebar.markdown("[Visualization](#visualization-inference)")
-st.sidebar.markdown("[Loss & Metrics](#training-and-metrics-curves)")
+# st.sidebar.markdown("[Loss & Metrics](#training-and-metrics-curves)")
 
 st.title("Tabular Data Analysis")
 st.markdown("This dashboard explores APSIM outputs using Random Forest and Gradient Boosting models.")
@@ -227,27 +227,25 @@ st.markdown("Dataset of **819** numbers of image was used for training, **110** 
 st.markdown("## Table of Model Comparison", unsafe_allow_html=True)
 
 models_matrix = pd.DataFrame({
-    "Model": ["fcn_resnet50", "deeplabv3_resnet50", "segformer-b0"],
-    "Loss Function": ["CrossEntropy Loss", "CrossEntropy Loss", "CrossEntropy Loss"],
+    "Model": ["SegFormer", "SegFormer Focal", "SegFormer CE+Dice"],
+    "Loss Function": ["CrossEntropy Loss", "Focal Loss", "CE+Dice Loss"],
     "Optimizer": ["AdamW optimizer", "AdamW optimizer", "AdamW optimizer"],
-    "Learning Rate": ["0.0001", "0.0001", "0.0001"],
-    "mean IoU": ["0.4348", "0.4162", "0.5579"],
-    "mean PA": ["0.5728", "0.5575", "0.6963"],
+    "Learning Rate": ["0.0001", "0.0001", "0.0001"]
 }).set_index("Model")
 
 models_classes = pd.DataFrame({
-    "FCN_IoU": ["0.7820", "0.3289", "0.0027", "0.5996"],
-    "FCN_Accuracy": ["0.8563", "0.4456", "0.0033", "0.8571"],
-    "Deeplab_IoU": ["0.7811", "0.2627", "0.0074", "0.6137"],
-    "Deeplab_Accuracy": ["0.8180", "0.3414", "0.0131", "0.9390"],
-    "SegFormer_IoU": ["0.8100", "0.6673", "0.0181", "0.6035"],
-    "SegFormer_Accuracy": ["0.8509", "0.8226", "0.0188", "0.8943"],
-}, index=["Background","Head","Stem","Leaf"])
+    "SegFormer IoU": ["0.8100", "0.6673", "0.0181", "0.6035", "0.5579"],
+    "SegFormer Accuracy": ["0.8509", "0.8226", "0.0188", "**0.8943**", "0.6963"],
+    "SegFormer Focal IoU": ["**0.8243**", "0.6139", "**0.1722**", "0.5097", "0.5444"],
+    "SegFormer Focal Accuracy": ["**0.9106**", "**0.8932**", "**0.5586**", "0.6310", "0.7719"],
+    "SegFormer CE+DICE IoU": ["0.8212", "**0.7011**", "0.1442", "**0.6143**", "**0.5770**"],
+    "SegFormer CE+DICE Accuracy": ["0.8693", "0.8262", "0.2405", "0.8766", "**0.7349**"],
+}, index=["Background","Head","Stem","Leaf", "Average"])
 
 st.text(' ')
 st.text(' ')
 
-st.markdown("**The model parameters and result.**")
+st.markdown("**The model parameters.**")
 st.table(models_matrix)
 
 st.text(' ')
@@ -270,7 +268,8 @@ inf_col1, _, inf_col2 = st.columns([3, 1, 1])
 
 with inf_col1:
     # st.markdown("Visualization of the model")
-    model_target = st.selectbox("**Select Visualization Model**", ["FCN", "Deeplab", "SegFormer",])
+    model_target = st.selectbox("**Select Visualization Model**", ["SegFormer", "SegFormer Focal", "SegFormer CE-Dice",])
+    model_target = model_target.replace(" ", "-")
     images_dir = f"./inference_outputs/{model_target.lower()}"
 
     # initialize with one random image on first load
@@ -302,15 +301,15 @@ st.image(st.session_state['random_image'], caption=f"Inference result ({model_ta
 
 # 3. Training and Validation Loss
 
-st.markdown("## Training and Metrics Curves", unsafe_allow_html=True)
-st.markdown(f"**{model_target} Curves**")
+# st.markdown("## Training and Metrics Curves", unsafe_allow_html=True)
+# st.markdown(f"**{model_target} Curves**")
 
-img_col1, img_col2 = st.columns(2)
+# img_col1, img_col2 = st.columns(2)
 
-with img_col1:
-    st.image(f"./{model_target.lower()}-output/{model_target.lower()}-model-v2-loss-resized.png")
+# with img_col1:
+#     st.image(f"./{model_target.lower()}-output/{model_target.lower()}-model-v2-loss-resized.png")
 
-with img_col2:
-    st.image(f"./{model_target.lower()}-output/{model_target.lower()}-model-v2-metrics-resized.png")
+# with img_col2:
+#     st.image(f"./{model_target.lower()}-output/{model_target.lower()}-model-v2-metrics-resized.png")
 
 
